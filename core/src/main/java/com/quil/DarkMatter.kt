@@ -4,8 +4,12 @@ package com.quil
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.quil.ecs.system.PlayerAnimationSystem
+import com.quil.ecs.system.PlayerInputSystem
 import com.quil.ecs.system.RenderSystem
 import com.quil.screens.GameScreen
 import ktx.app.KtxGame
@@ -18,8 +22,19 @@ const val UNIT = 1 / 16f // 1 world unit to 16 pixels
 class DarkMatterMain : KtxGame<KtxScreen>() {
     val gameViewport = FitViewport(9f, 16f)
     val batch by lazy { SpriteBatch() }
+
+    private val defaultRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_base.png"))) }
+    private val leftRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_left.png"))) }
+    private val rightRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_right.png"))) }
+
     val engine by lazy {
         PooledEngine().apply {
+            addSystem(PlayerInputSystem(gameViewport))
+            addSystem(
+                PlayerAnimationSystem(
+                    defaultRegion, leftRegion, rightRegion
+                )
+            )
             addSystem(RenderSystem(batch, gameViewport))
         }
     }
