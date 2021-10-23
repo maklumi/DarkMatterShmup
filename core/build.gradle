@@ -8,4 +8,5 @@ dependencies {
     api group: 'io.github.libktx', name: 'ktx-app', version: ktxVersion
     api group: 'io.github.libktx', name: 'ktx-log', version: ktxVersion
     api group: 'io.github.libktx', name: 'ktx-graphics', version: ktxVersion
+    api group: 'io.github.libktx', name: 'ktx-ashley', version: ktxVersion
 }

@@ -6,21 +6,31 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.quil.DarkMatterMain
+import com.quil.UNIT
+import com.quil.ecs.component.GraphicComponent
+import com.quil.ecs.component.TransformComponent
+import ktx.ashley.entity
+import ktx.ashley.get
+import ktx.ashley.with
 import ktx.graphics.use
 import ktx.log.logger
 
 private val LOG = logger<GameScreen>()
 
 class GameScreen(game: DarkMatterMain, batch: Batch) : DarkMatterScreen(game, batch) {
-    private val viewport = FitViewport(9f, 16f) // set our viewport to 9 units x 16 units
-    private val texture = Texture(Gdx.files.internal("graphics/ship_base.png"))
-    private val sprite = Sprite(texture).apply {
-        setSize(1f, 1f) // set to 1 unit dimension otherwise the original is 9 by 10 units
-    }
-
-    override fun show() {
-        LOG.debug { "First screen" }
-        sprite.setPosition(1f, 1f)
+    private val viewport = FitViewport(9f, 16f)
+    private val playerTexture = Texture(Gdx.files.internal("graphics/ship_base.png"))
+    private val player = engine.entity {
+        with<TransformComponent>() {
+            position.set(1f, 1f, 0f)
+        }
+        with<GraphicComponent>() {
+            sprite.run {
+                setRegion(playerTexture)
+                setSize(texture.width * UNIT, texture.height * UNIT)
+                setOriginCenter() // center is used for rotation
+            }
+        }
     }
 
     override fun resize(width: Int, height: Int) {
@@ -28,14 +38,24 @@ class GameScreen(game: DarkMatterMain, batch: Batch) : DarkMatterScreen(game, ba
     }
 
     override fun render(delta: Float) {
-        viewport.apply() // if using multiple viewports
-        batch.use(viewport.camera.combined) {
-            sprite.draw(it)
+        engine.update(delta)
+
+        viewport.apply()
+//        batch.use(viewport.camera.combined) {
+//            player[GraphicComponent.mapper]?.sprite?.draw(it)
+//        }
+        batch.use(viewport.camera.combined) { batch ->
+            player[GraphicComponent.mapper]?.let { graphic ->
+                player[TransformComponent.mapper]?.let { transform ->
+                    graphic.sprite.run {
+                        rotation = transform.rotationDeg
+                        setBounds(transform.position.x, transform.position.y, transform.size.x, transform.size.y)
+                        draw(batch)
+                    }
+                }
+            }
+
         }
     }
 
-    override fun dispose() {
-        super.dispose()
-        texture.dispose()
-    }
 }
