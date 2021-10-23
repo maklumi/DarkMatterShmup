@@ -21,7 +21,7 @@ object Lwjgl3Launcher {
         get() {
             val configuration = Lwjgl3ApplicationConfiguration()
             configuration.setTitle("DarkMatterShmup")
-            configuration.setWindowedMode(640, 480)
+            configuration.setWindowedMode(9*32, 16*32)
             configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png")
             return configuration
         }
