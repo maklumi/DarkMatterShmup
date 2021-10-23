@@ -7,4 +7,5 @@ dependencies {
     api "com.badlogicgames.ashley:ashley:$ashleyVersion"
     api group: 'io.github.libktx', name: 'ktx-app', version: ktxVersion
     api group: 'io.github.libktx', name: 'ktx-log', version: ktxVersion
+    api group: 'io.github.libktx', name: 'ktx-graphics', version: ktxVersion
 }
