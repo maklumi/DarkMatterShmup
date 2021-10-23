@@ -1,11 +1,18 @@
 package com.quil
 
-import com.badlogic.gdx.Game
-import com.quil.FirstScreen
 
-/** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
-class DarkMatterMain : Game() {
+import com.badlogic.gdx.Application
+import com.badlogic.gdx.Gdx
+import com.quil.screens.Firstcreen
+import com.quil.screens.SecondScreen
+import ktx.app.KtxGame
+import ktx.app.KtxScreen
+
+class DarkMatterMain : KtxGame<KtxScreen>() {
     override fun create() {
-        setScreen(FirstScreen())
+        Gdx.app.logLevel = Application.LOG_DEBUG
+        addScreen(Firstcreen(this))
+        addScreen(SecondScreen(this))
+        setScreen<Firstcreen>()
     }
 }
