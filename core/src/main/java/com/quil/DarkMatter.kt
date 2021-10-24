@@ -6,6 +6,7 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.quil.ecs.system.PlayerAnimationSystem
@@ -23,16 +24,20 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
     val gameViewport = FitViewport(9f, 16f)
     val batch by lazy { SpriteBatch() }
 
-    private val defaultRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_base.png"))) }
-    private val leftRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_left.png"))) }
-    private val rightRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_right.png"))) }
+    //    private val defaultRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_base.png"))) }
+//    private val leftRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_left.png"))) }
+//    private val rightRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_right.png"))) }
+    private val gameAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
 
     val engine by lazy {
         PooledEngine().apply {
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(
                 PlayerAnimationSystem(
-                    defaultRegion, leftRegion, rightRegion
+//                    defaultRegion, leftRegion, rightRegion
+                    gameAtlas.findRegion("ship_base"),
+                    gameAtlas.findRegion("ship_left"),
+                    gameAtlas.findRegion("ship_right")
                 )
             )
             addSystem(RenderSystem(batch, gameViewport))
@@ -49,5 +54,6 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
         super.dispose()
         LOG.debug { "Number of sprites in batch: ${batch.maxSpritesInBatch}" }
         batch.dispose()
+        gameAtlas.dispose()
     }
 }
