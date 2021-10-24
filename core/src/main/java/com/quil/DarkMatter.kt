@@ -27,7 +27,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
     //    private val defaultRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_base.png"))) }
 //    private val leftRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_left.png"))) }
 //    private val rightRegion by lazy { TextureRegion(Texture(Gdx.files.internal("graphics/ship_right.png"))) }
-    private val gameAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
+    val gameAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
 
     val engine by lazy {
         PooledEngine().apply {

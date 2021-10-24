@@ -1,27 +1,41 @@
 
 graphics.png
-size: 64, 16
+size: 128, 256
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
+character
+  rotate: false
+  xy: 2, 13
+  size: 20, 27
+  orig: 20, 27
+  offset: 0, 0
+  index: -1
 ship_base
   rotate: false
-  xy: 26, 2
+  xy: 24, 31
   size: 10, 9
   orig: 10, 9
   offset: 0, 0
   index: -1
 ship_left
   rotate: false
-  xy: 2, 2
+  xy: 91, 194
   size: 10, 9
   orig: 10, 9
   offset: 0, 0
   index: -1
 ship_right
   rotate: false
-  xy: 14, 2
+  xy: 2, 2
   size: 10, 9
   orig: 10, 9
+  offset: 0, 0
+  index: -1
+tree
+  rotate: false
+  xy: 2, 42
+  size: 87, 161
+  orig: 87, 161
   offset: 0, 0
   index: -1
