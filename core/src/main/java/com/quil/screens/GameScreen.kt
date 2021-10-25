@@ -5,13 +5,16 @@ import com.quil.DarkMatterMain
 import com.quil.ecs.component.*
 import ktx.ashley.entity
 import ktx.ashley.with
+import kotlin.math.min
+
+private const val MAX_DELTA_TIME = 1 / 20f
 
 class GameScreen(game: DarkMatterMain, batch: Batch) : DarkMatterScreen(game, batch) {
 
     override fun show() {
         engine.entity {
             with<TransformComponent> {
-                position.set(4.5f, 8f, 0f)
+                setInitialPosition(4.5f, 8f, 0f)
             }
             with<MoveComponent>()
             with<GraphicComponent>()
@@ -21,7 +24,7 @@ class GameScreen(game: DarkMatterMain, batch: Batch) : DarkMatterScreen(game, ba
     }
 
     override fun render(delta: Float) {
-        engine.update(delta)
+        engine.update(min(MAX_DELTA_TIME, delta))
     }
 
 }
