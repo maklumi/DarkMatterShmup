@@ -14,7 +14,7 @@ import ktx.app.KtxScreen
 import ktx.log.logger
 
 private val LOG = logger<DarkMatterMain>()
-const val UNIT = 1 / 16f // 1 world unit to 16 pixels
+const val UNIT_SCALE = 1 / 16f // 1 world unit to 16 pixels
 const val V_WIDTH = 9
 const val V_HEIGHT = 16
 
@@ -36,6 +36,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
                     gameAtlas.findRegion("ship_right")
                 )
             )
+            addSystem(AttachSystem())
             addSystem(AnimationSystem(gameAtlas))
             addSystem(RenderSystem(batch, gameViewport))
             addSystem(RemoveSystem())
@@ -45,7 +46,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
 
     override fun create() {
         Gdx.app.logLevel = Application.LOG_DEBUG
-        addScreen(GameScreen(this, batch))
+        addScreen(GameScreen(this))
         setScreen<GameScreen>()
     }
 

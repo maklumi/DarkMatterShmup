@@ -3,6 +3,7 @@ package com.quil.ecs.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
+import com.quil.V_HEIGHT
 import com.quil.V_WIDTH
 import com.quil.ecs.component.*
 import ktx.ashley.allOf
@@ -40,7 +41,7 @@ class MoveSystem :
             entity[TransformComponent.mapper]?.let { transform ->
                 transform.interpolatedPosition.set(
                     MathUtils.lerp(transform.prevPosition.x, transform.position.x, alpha),
-                    MathUtils.lerp(transform.prevPosition.y, transform.prevPosition.y, alpha),
+                    MathUtils.lerp(transform.prevPosition.y, transform.position.y, alpha),
                     transform.position.z
                 )
             }
@@ -99,7 +100,7 @@ class MoveSystem :
         transform.position.y = MathUtils.clamp(
             transform.position.y + move.speed.y * deltaTime,
             1f,
-            V_WIDTH + 1f - transform.size.y
+            V_HEIGHT + 1f - transform.size.y
         )
     }
 }

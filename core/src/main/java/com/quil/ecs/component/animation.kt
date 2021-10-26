@@ -16,6 +16,7 @@ enum class AnimationType(
 ) {
     NONE(""),
     DARK_MATTER("dark_matter", Animation.PlayMode.LOOP, 1f),
+    FIRE("fire"),
 }
 
 class Animation2D(
