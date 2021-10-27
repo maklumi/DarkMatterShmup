@@ -4,6 +4,7 @@ package com.quil
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -17,12 +18,16 @@ private val LOG = logger<DarkMatterMain>()
 const val UNIT_SCALE = 1 / 16f // 1 world unit to 16 pixels
 const val V_WIDTH = 9
 const val V_HEIGHT = 16
+const val V_WIDTH_PIXELS = 135
+const val V_HEIGHT_PIXELS = 240
 
 class DarkMatterMain : KtxGame<KtxScreen>() {
+    val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val batch by lazy { SpriteBatch() }
 
     val gameAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
+    val backgroundTexture by lazy { Texture("graphics/background.png") }
 
     val engine by lazy {
         PooledEngine().apply {
@@ -39,7 +44,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
             )
             addSystem(AttachSystem())
             addSystem(AnimationSystem(gameAtlas))
-            addSystem(RenderSystem(batch, gameViewport))
+            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTexture))
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }
@@ -56,5 +61,6 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
         LOG.debug { "Number of sprites in batch: ${batch.maxSpritesInBatch}" }
         batch.dispose()
         gameAtlas.dispose()
+        backgroundTexture.dispose()
     }
 }

@@ -17,8 +17,8 @@ enum class AnimationType(
     NONE(""),
     DARK_MATTER("dark_matter", Animation.PlayMode.LOOP, 1f),
     FIRE("fire"),
-    SPEED_1("orb_blue"), SPEED_2("orb_yellow"),
-    LIFE("life"), SHIELD("shield"),
+    SPEED_1("orb_blue", speedRate = 0.5f), SPEED_2("orb_yellow"),
+    LIFE("life"), SHIELD("shield", speedRate = 0.75f),
 }
 
 class Animation2D(
