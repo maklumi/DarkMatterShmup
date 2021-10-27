@@ -5,9 +5,8 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.quil.ecs.component.PlayerComponent
 import com.quil.ecs.component.RemoveComponent
 import com.quil.ecs.component.TransformComponent
+import com.quil.event.GameEvent
 import com.quil.event.GameEventManager
-import com.quil.event.GameEventPlayerDeath
-import com.quil.event.GameEventType
 import ktx.ashley.addComponent
 import ktx.ashley.allOf
 import ktx.ashley.get
@@ -43,8 +42,7 @@ class DamageSystem(
             player.life -= damage
             if (player.life <= 0f) {
                 gameEventManager.dispatchEvent(
-                    GameEventType.PLAYER_DEATH,
-                    GameEventPlayerDeath.apply {
+                    GameEvent.PlayerDeath.apply {
                         this.distance = player.distance
                     })
                 entity.addComponent<RemoveComponent>(engine) {

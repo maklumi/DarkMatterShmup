@@ -7,8 +7,6 @@ import com.quil.ecs.component.*
 import com.quil.ecs.system.DAMAGE_AREA_HEIGHT
 import com.quil.event.GameEvent
 import com.quil.event.GameEventListener
-import com.quil.event.GameEventPlayerDeath
-import com.quil.event.GameEventType
 import ktx.ashley.entity
 import ktx.ashley.with
 import kotlin.math.min
@@ -18,7 +16,7 @@ private const val MAX_DELTA_TIME = 1 / 20f
 class GameScreen(game: DarkMatterMain) : DarkMatterScreen(game), GameEventListener {
 
     override fun show() {
-        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+        gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
 
         spawnPlayer()
 
@@ -61,10 +59,13 @@ class GameScreen(game: DarkMatterMain) : DarkMatterScreen(game), GameEventListen
         gameEventManager.removeListener(this)
     }
 
-    override fun onEvent(type: GameEventType, data: GameEvent?) {
-        if (type == GameEventType.PLAYER_DEATH) {
-//            val eventData = data as GameEventPlayerDeath
-            spawnPlayer()
+    override fun onEvent(event: GameEvent) {
+        when (event) {
+            GameEvent.PlayerDeath -> {
+                spawnPlayer()
+            }
+            GameEvent.CollectPowerUp -> {
+            }
         }
     }
 }
