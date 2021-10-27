@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.quil.ecs.system.*
+import com.quil.event.GameEventManager
 import com.quil.screens.GameScreen
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -25,6 +26,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val batch by lazy { SpriteBatch() }
+    val gameEventManager = GameEventManager()
 
     val gameAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
     val backgroundTexture by lazy { Texture("graphics/background.png") }
@@ -33,8 +35,8 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
         PooledEngine().apply {
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
-            addSystem(PowerUpSystem())
-            addSystem(DamageSystem())
+            addSystem(PowerUpSystem(gameEventManager))
+            addSystem(DamageSystem(gameEventManager))
             addSystem(
                 PlayerAnimationSystem(
                     gameAtlas.findRegion("ship_base"),
@@ -44,7 +46,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
             )
             addSystem(AttachSystem())
             addSystem(AnimationSystem(gameAtlas))
-            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTexture))
+            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTexture, gameEventManager))
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }
