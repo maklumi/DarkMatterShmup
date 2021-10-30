@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.quil.asset.TextureAsset
 import com.quil.asset.TextureAtlasAsset
+import com.quil.audio.AudioService
+import com.quil.audio.DefaultAudioService
 import com.quil.ecs.system.*
 import com.quil.event.GameEventManager
 import com.quil.screens.LoadingScreen
@@ -33,6 +35,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
         KtxAsync.initiate()
         AssetStorage()
     }
+    val audioService: AudioService by lazy { DefaultAudioService(assets) }
 
     val engine by lazy {
         PooledEngine().apply {
@@ -41,7 +44,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
 
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
-            addSystem(PowerUpSystem(gameEventManager))
+            addSystem(PowerUpSystem(gameEventManager, audioService))
             addSystem(DamageSystem(gameEventManager))
             addSystem(CameraShakeSystem(gameViewport.camera, gameEventManager))
             addSystem(

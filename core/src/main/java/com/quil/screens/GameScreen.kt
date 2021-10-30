@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine
 import com.quil.DarkMatterMain
 import com.quil.UNIT_SCALE
 import com.quil.V_WIDTH
+import com.quil.asset.MusicAsset
 import com.quil.ecs.component.*
 import com.quil.ecs.system.DAMAGE_AREA_HEIGHT
 import com.quil.event.GameEvent
@@ -22,6 +23,7 @@ class GameScreen(
     override fun show() {
         gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
 
+        audioService.play(MusicAsset.GAME)
         spawnPlayer()
 
         engine.entity {
@@ -56,6 +58,7 @@ class GameScreen(
 
     override fun render(delta: Float) {
         engine.update(min(MAX_DELTA_TIME, delta))
+        audioService.update()
     }
 
     override fun hide() {

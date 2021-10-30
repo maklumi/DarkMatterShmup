@@ -5,6 +5,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.quil.V_WIDTH
+import com.quil.audio.AudioService
 import com.quil.ecs.component.*
 import com.quil.event.GameEvent
 import com.quil.event.GameEventManager
@@ -29,7 +30,8 @@ private class SpawnPattern(
 )
 
 class PowerUpSystem(
-    private val gameEventManager: GameEventManager
+    private val gameEventManager: GameEventManager,
+    private val audioService: AudioService
 ) : IteratingSystem(
     allOf(PowerUpComponent::class, TransformComponent::class)
         .exclude(RemoveComponent::class)
@@ -120,12 +122,13 @@ class PowerUpSystem(
         requireNotNull(powerUpCmp) { "Entity |entity| must have a PowerUpComponent. entity=$powerUp" }
 
         powerUpCmp.type.also { powerUpType ->
-        LOG.debug { "Picking up power up of type ${powerUpType}" }
+            LOG.debug { "Picking up power up of type ${powerUpType}" }
             player[MoveComponent.mapper]?.let { it.speed.y += powerUpType.speedGain }
             player[PlayerComponent.mapper]?.let {
                 it.life = min(it.maxLife, it.life + powerUpType.lifeGain)
                 it.shield = min(it.maxShield, it.shield + powerUpType.shieldGain)
             }
+            audioService.play(powerUpType.soundAsset)
 
             gameEventManager.dispatchEvent(
                 GameEvent.CollectPowerUp.apply {

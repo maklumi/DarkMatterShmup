@@ -1,6 +1,7 @@
 package com.quil.screens
 
 import com.quil.DarkMatterMain
+import com.quil.asset.SoundAsset
 import com.quil.asset.TextureAsset
 import com.quil.asset.TextureAtlasAsset
 import kotlinx.coroutines.joinAll
@@ -18,6 +19,7 @@ class LoadingScreen(game: DarkMatterMain) : DarkMatterScreen(game) {
         val assetRefs = gdxArrayOf(
             TextureAsset.values().map { assets.loadAsync(it.descriptor) },
             TextureAtlasAsset.values().map { assets.loadAsync(it.descriptor) },
+            SoundAsset.values().map { assets.loadAsync(it.descriptor) },
         ).flatten()
 
         // then change to game screen
