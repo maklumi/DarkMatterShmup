@@ -12,4 +12,5 @@ dependencies {
     api group: 'io.github.libktx', name: 'ktx-collections', version: ktxVersion
     api group: 'io.github.libktx', name: 'ktx-graphics', version: ktxVersion
     api group: 'io.github.libktx', name: 'ktx-log', version: ktxVersion
+    api group: 'io.github.libktx', name: 'ktx-preferences', version: ktxVersion
 }

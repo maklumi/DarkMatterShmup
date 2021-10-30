@@ -9,6 +9,7 @@ import com.quil.ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.exclude
 import ktx.ashley.get
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -88,7 +89,9 @@ class MoveSystem :
             MAX_VER_POS_PLAYER_SPEED
         )
 
+        val oldY = transform.position.y
         moveEntity(transform, move, deltaTime)
+        player.distance += abs(transform.position.y - oldY)
     }
 
     private fun moveEntity(transform: TransformComponent, move: MoveComponent, deltaTime: Float) {

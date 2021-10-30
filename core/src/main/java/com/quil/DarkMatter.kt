@@ -4,8 +4,10 @@ package com.quil
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.quil.asset.MusicAsset
 import com.quil.asset.TextureAsset
 import com.quil.asset.TextureAtlasAsset
 import com.quil.audio.AudioService
@@ -36,6 +38,7 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
         AssetStorage()
     }
     val audioService: AudioService by lazy { DefaultAudioService(assets) }
+    val preferences: Preferences by lazy { Gdx.app.getPreferences("preferences-game-dark-matter") }
 
     val engine by lazy {
         PooledEngine().apply {
@@ -71,6 +74,9 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
     override fun dispose() {
         super.dispose()
         LOG.debug { "Number of sprites in batch: ${batch.maxSpritesInBatch}" }
+        MusicAsset.values().forEach {
+            LOG.debug { "Refcount $it: ${assets.getReferenceCount(it.descriptor)}" }
+        }
         batch.dispose()
         assets.dispose()
     }
