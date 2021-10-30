@@ -4,15 +4,17 @@ package com.quil
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.quil.asset.TextureAsset
+import com.quil.asset.TextureAtlasAsset
 import com.quil.ecs.system.*
 import com.quil.event.GameEventManager
-import com.quil.screens.GameScreen
+import com.quil.screens.LoadingScreen
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
+import ktx.assets.async.AssetStorage
+import ktx.async.KtxAsync
 import ktx.log.logger
 
 private val LOG = logger<DarkMatterMain>()
@@ -27,12 +29,16 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val batch by lazy { SpriteBatch() }
     val gameEventManager = GameEventManager()
-
-    val gameAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
-    val backgroundTexture by lazy { Texture("graphics/background.png") }
+    val assets: AssetStorage by lazy {
+        KtxAsync.initiate()
+        AssetStorage()
+    }
 
     val engine by lazy {
         PooledEngine().apply {
+            val gameAtlas = assets[TextureAtlasAsset.GAME_GRAPHICS.descriptor]
+            val backgroundTexture = assets[TextureAsset.BACKGROUND.descriptor]
+
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
             addSystem(PowerUpSystem(gameEventManager))
@@ -55,15 +61,14 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
 
     override fun create() {
         Gdx.app.logLevel = Application.LOG_DEBUG
-        addScreen(GameScreen(this))
-        setScreen<GameScreen>()
+        addScreen(LoadingScreen(this))
+        setScreen<LoadingScreen>()
     }
 
     override fun dispose() {
         super.dispose()
         LOG.debug { "Number of sprites in batch: ${batch.maxSpritesInBatch}" }
         batch.dispose()
-        gameAtlas.dispose()
-        backgroundTexture.dispose()
+        assets.dispose()
     }
 }

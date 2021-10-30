@@ -1,5 +1,6 @@
 package com.quil.screens
 
+import com.badlogic.ashley.core.Engine
 import com.quil.DarkMatterMain
 import com.quil.UNIT_SCALE
 import com.quil.V_WIDTH
@@ -13,7 +14,10 @@ import kotlin.math.min
 
 private const val MAX_DELTA_TIME = 1 / 20f
 
-class GameScreen(game: DarkMatterMain) : DarkMatterScreen(game), GameEventListener {
+class GameScreen(
+    game: DarkMatterMain,
+    private val engine: Engine = game.engine
+) : DarkMatterScreen(game), GameEventListener {
 
     override fun show() {
         gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
