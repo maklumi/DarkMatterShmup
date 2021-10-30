@@ -1,10 +1,12 @@
 package com.quil.asset
 
 import com.badlogic.gdx.assets.AssetDescriptor
+import com.badlogic.gdx.assets.loaders.ShaderProgramLoader
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 
 enum class TextureAsset(
     filename: String,
@@ -43,4 +45,20 @@ enum class MusicAsset(
     val descriptor: AssetDescriptor<Music> = AssetDescriptor("$directory/$filename", Music::class.java)
 ) {
     GAME("game.mp3")
+}
+
+enum class ShaderProgramAsset(
+    vertexFilename: String,
+    fragmentFilename: String,
+    directory: String = "shader",
+    val descriptor: AssetDescriptor<ShaderProgram> = AssetDescriptor(
+        "$directory/$vertexFilename/$fragmentFilename",
+        ShaderProgram::class.java,
+        ShaderProgramLoader.ShaderProgramParameter().apply {
+            vertexFile = "$directory/$vertexFilename"
+            fragmentFile = "$directory/$fragmentFilename"
+        }
+    )
+) {
+    OUTLINE("default.vert", "outline.frag"),
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.quil.asset.MusicAsset
+import com.quil.asset.ShaderProgramAsset
 import com.quil.asset.TextureAsset
 import com.quil.asset.TextureAtlasAsset
 import com.quil.audio.AudioService
@@ -59,7 +60,16 @@ class DarkMatterMain : KtxGame<KtxScreen>() {
             )
             addSystem(AttachSystem())
             addSystem(AnimationSystem(gameAtlas))
-            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTexture, gameEventManager))
+            addSystem(
+                RenderSystem(
+                    batch,
+                    gameViewport,
+                    uiViewport,
+                    backgroundTexture,
+                    gameEventManager,
+                    assets[ShaderProgramAsset.OUTLINE.descriptor]
+                )
+            )
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }

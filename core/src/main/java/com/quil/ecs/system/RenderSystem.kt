@@ -3,15 +3,16 @@ package com.quil.ecs.system
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.SortedIteratingSystem
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
-import com.quil.ecs.component.GraphicComponent
-import com.quil.ecs.component.PowerUpType
-import com.quil.ecs.component.TransformComponent
+import com.quil.ecs.component.*
 import com.quil.event.GameEvent
 import com.quil.event.GameEventListener
 import com.quil.event.GameEventManager
@@ -28,7 +29,8 @@ class RenderSystem(
     private val viewport: Viewport,
     private val uiViewport: FitViewport,
     backgroundTexture: Texture,
-    private val gameEventManager: GameEventManager
+    private val gameEventManager: GameEventManager,
+    private val shaderProgram: ShaderProgram
 ) : GameEventListener,
     SortedIteratingSystem(
         allOf(TransformComponent::class, GraphicComponent::class).get(),
@@ -38,6 +40,13 @@ class RenderSystem(
         setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
     })
     private val backgroundScrollSpeed = Vector2(0.03f, -0.25f)
+
+    private val textureSizeLocation = shaderProgram.getUniformLocation("u_textureSize")
+    private val outlineColorLocation = shaderProgram.getUniformLocation("u_outlineColor")
+    private val outlineColor = Color(0f, 112f / 255f, 214f / 255f, 1f)
+    private val playerEntities by lazy {
+        engine.getEntitiesFor(allOf(PlayerComponent::class).exclude(RemoveComponent::class.java).get())
+    }
 
     override fun addedToEngine(engine: Engine?) {
         super.addedToEngine(engine)
@@ -63,6 +72,34 @@ class RenderSystem(
         forceSort()
         viewport.apply()
         batch.use(viewport.camera.combined) { super.update(deltaTime) }
+        // render outlines of entities
+        renderEntityOutlines()
+    }
+
+    private fun renderEntityOutlines() {
+        batch.use(viewport.camera.combined) {
+            it.shader = shaderProgram
+            playerEntities.forEach { entity ->
+                renderPlayerOutlines(entity, it)
+            }
+            it.shader = null
+        }
+    }
+
+    private fun renderPlayerOutlines(entity: Entity, batch: Batch) {
+        val player = entity[PlayerComponent.mapper]
+        requireNotNull(player) { "Entity |entity| must have a PlayerComponent. entity=$entity" }
+
+        if (player.shield > 0f) {
+            outlineColor.a = MathUtils.clamp(player.shield / player.maxShield, 0f, 1f)
+            shaderProgram.setUniformf(outlineColorLocation, outlineColor)
+            entity[GraphicComponent.mapper]?.let { graphic ->
+                graphic.sprite.run {
+                    shaderProgram.setUniformf(textureSizeLocation, texture.width.toFloat(), texture.height.toFloat())
+                    draw(batch)
+                }
+            }
+        }
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
