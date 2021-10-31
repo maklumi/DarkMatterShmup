@@ -1,10 +1,12 @@
 package com.quil.asset
 
 import com.badlogic.gdx.assets.AssetDescriptor
+import com.badlogic.gdx.assets.loaders.BitmapFontLoader
 import com.badlogic.gdx.assets.loaders.ShaderProgramLoader
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 
@@ -20,9 +22,11 @@ enum class TextureAsset(
 enum class TextureAtlasAsset(
     filename: String,
     directory: String = "graphics",
+    val isSkinAtlas: Boolean = false,
     val descriptor: AssetDescriptor<TextureAtlas> = AssetDescriptor("$directory/$filename", TextureAtlas::class.java)
 ) {
     GAME_GRAPHICS("graphics.atlas"),
+    UI("ui.atlas", directory = "ui", isSkinAtlas = true),
 
 }
 
@@ -61,4 +65,19 @@ enum class ShaderProgramAsset(
     )
 ) {
     OUTLINE("default.vert", "outline.frag"),
+}
+
+enum class BitmapFontAsset(
+    filename: String,
+    directory: String = "ui",
+    val descriptor: AssetDescriptor<BitmapFont> = AssetDescriptor(
+        "$directory/$filename",
+        BitmapFont::class.java,
+        BitmapFontLoader.BitmapFontParameter().apply {
+            atlasName = TextureAtlasAsset.UI.descriptor.fileName
+        }
+    )
+) {
+    FONT_LARGE_GRADIENT("font11_gradient.fnt"),
+    FONT_DEFAULT("font8.fnt"),
 }
